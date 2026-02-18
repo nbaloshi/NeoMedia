@@ -2,6 +2,7 @@ package auth
 
 import (
 	"NeoMedia/db/sql"
+	"NeoMedia/internal/utils"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -30,7 +31,7 @@ func RegisterationHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn
 		return
 	}
 
-	hashedPassword, hasherr := HashPassword(body.Password)
+	hashedPassword, hasherr := utils.HashPassword(body.Password)
 	if hasherr != nil {
 		log.Printf("Registration handler - Error hashing password: %v", err)
 		http.Error(w, "Bad request", http.StatusBadRequest)
