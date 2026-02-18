@@ -1,6 +1,8 @@
 package main
 
 import (
+	"NeoMedia/db/sql"
+	"NeoMedia/internal/auth"
 	"context"
 	"fmt"
 	"log"
@@ -10,7 +12,6 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/jackc/pgx/v5"
 )
 
 func main() {
@@ -20,11 +21,10 @@ func main() {
 
 	// Connect to databse
 	connStr := "postgres://neouser:84560505@localhost:5432/neomedia?sslmode=disable"
-	db, err := pgx.Connect(ctx, connStr)
+	db, err := sql.GetDB(ctx, connStr)
 	if err != nil {
-		log.Fatal("Unable to connect to databse:", err)
+		log.Fatal(err)
 	}
-	fmt.Println("Connected to database")
 
 	// Setup HTTP server with /health route
 	r := chi.NewRouter()
@@ -32,6 +32,11 @@ func main() {
 		// Simple health response
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
+	})
+
+	// Registration route
+	r.Post("/register", func(w http.ResponseWriter, r *http.Request) {
+		auth.RegisterationHandler(w, r, db)
 	})
 
 	// Goroutine server
@@ -53,10 +58,7 @@ func main() {
 	//Gracefully close DB connection with timeout
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	if err := db.Close(shutdownCtx); err != nil {
-		log.Printf("Error closing DB connection: %v", err)
-	} else {
-		fmt.Println("Disconnected from database")
-	}
+
+	sql.CloseDB(shutdownCtx, db)
 	fmt.Println("Program exited cleanly")
 }
