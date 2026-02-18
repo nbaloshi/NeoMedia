@@ -55,7 +55,7 @@ func RegisterationHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn
 	)
 
 	if execErr != nil {
-        log.Printf("Error inserting user: %v", execErr)
+        log.Printf("Register handler - Error inserting user: %v", execErr)
         http.Error(w, "Internal Server Error", http.StatusInternalServerError)
         return
     }
