@@ -39,6 +39,16 @@ func main() {
 		auth.RegisterationHandler(w, r, db)
 	})
 
+	// Login route
+	r.Post("/login", func(w http.ResponseWriter, r *http.Request) {
+		auth.LoginHandler(w, r, db)
+	})
+
+	// Logout route
+	r.Post("/logout", func(w http.ResponseWriter, r *http.Request) {
+		auth.LogoutHandler(w, r, db)
+	})
+
 	// Goroutine server
 	server := &http.Server{
 		Addr:	":8080",

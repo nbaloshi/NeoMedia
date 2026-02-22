@@ -2,6 +2,7 @@ package auth
 
 import (
 	"NeoMedia/db/sql"
+	"NeoMedia/internal/sessions"
 	"NeoMedia/internal/utils"
 	"encoding/json"
 	"log"
@@ -15,7 +16,7 @@ type LoginBody struct {
 	Password	string	`json:"password"`
 }
 
-func login(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
+func LoginHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
 	var body LoginBody
 
 	// decode from frontend and put it in the body
@@ -51,7 +52,19 @@ func login(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
         return
 	}
 
-	// if correct then create a session token and store with user id in the sessions table
+	// delete previous session for the user
+	if err := sessions.DeleteSessionByUserId(r, conn, userId); err != nil {
+		http.Error(w, "Failed to clear old sessions", http.StatusInternalServerError)
+		return
+	}
+
+	// create a session token and store with user id in the sessions table
+	if err := sessions.CreateSession(r, conn, userId); err != nil {
+		http.Error(w, "Failed to create sessions", http.StatusInternalServerError)
+		return
+	}
 
 	// respond
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Login successful"))
 }
