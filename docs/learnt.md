@@ -8,3 +8,4 @@
 # Phase 2 (Auth and sessions)
 1. Initializing, connecting to and closing db
 2. pgcrypto, token generation with rand and bas64
+3. Sessions creation, fetching and deletion
