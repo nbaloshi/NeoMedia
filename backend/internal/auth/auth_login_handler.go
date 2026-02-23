@@ -52,14 +52,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
         return
 	}
 
-	// delete previous session for the user
-	if err := sessions.DeleteSessionByUserId(r, conn, userId); err != nil {
-		http.Error(w, "Failed to clear old sessions", http.StatusInternalServerError)
-		return
-	}
-
-	// create a session token and store with user id in the sessions table
-	if err := sessions.CreateSession(r, conn, userId); err != nil {
+	// create session
+	if err := sessions.StartSession(w, r, conn, userId); err != nil {
 		http.Error(w, "Failed to create sessions", http.StatusInternalServerError)
 		return
 	}

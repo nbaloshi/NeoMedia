@@ -9,3 +9,5 @@
 1. Initializing, connecting to and closing db
 2. pgcrypto, token generation with rand and bas64
 3. Sessions creation, fetching and deletion
+4. Difference between store, manager and middleware
+5. Cookies sent automatically with each request

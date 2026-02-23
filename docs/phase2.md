@@ -33,6 +33,17 @@ sessions
 2.  Send via cookie or header
 3.  Validate on POST/PUT/DELETE
 
+### Cleanup required
+- database reset
+- goroutine checks
+- routing readjustment
+- error handling
+- redundancy check
+- structure check
+- file and folder naming
+- consider connection pool
+- optimization
+
 # Step 1.4 – Frontend setup (NOW)
 1. cd ../
 - npm create vite@latest frontend -- --template react-ts

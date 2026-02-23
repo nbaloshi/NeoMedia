@@ -10,10 +10,10 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func CreateSession(r *http.Request, conn *pgx.Conn, userId int) error {
+func CreateSession(r *http.Request, conn *pgx.Conn, userId int) (string, error) {
 	token, err := utils.GenerateSessionToken(16)
 	if err != nil {
-		return fmt.Errorf("failed to generate token: %w", err)
+		return "", fmt.Errorf("failed to generate token: %w", err)
 	}
 
 	query := `
@@ -24,13 +24,13 @@ func CreateSession(r *http.Request, conn *pgx.Conn, userId int) error {
 	execErr := sql.Exec(r.Context(), conn, query,
 		userId,
 		token,
-		time.Now().Add(1 * time.Minute),
+		time.Now().Add(30 * time.Minute),
 	)
 	if execErr != nil {
-        return fmt.Errorf("failed to execute query: %w", execErr)
+        return "", fmt.Errorf("failed to execute query: %w", execErr)
     }
 
-	return nil
+	return token, nil
 }
 
 func FetchSession(r *http.Request, conn *pgx.Conn, token string) (int, error) {
