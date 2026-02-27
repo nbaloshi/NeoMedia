@@ -26,15 +26,15 @@ func RegisterationHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn
 	var body RegisterBody
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
-		log.Printf("Registration handler - Error decoding request body: %v", err)
-		http.Error(w, "Bad request", http.StatusBadRequest)
+		log.Printf("RegistrationHandler - Error decoding body: %v", err)
+		utils.RespondError(w, http.StatusBadRequest, "Bad request")
 		return
 	}
 
-	hashedPassword, hasherr := utils.HashPassword(body.Password)
-	if hasherr != nil {
-		log.Printf("Registration handler - Error hashing password: %v", err)
-		http.Error(w, "Bad request", http.StatusBadRequest)
+	hashedPassword, hashErr := utils.HashPassword(body.Password)
+	if hashErr != nil {
+		log.Printf("RegistrationHandler - Error hashing password: %v", hashErr)
+		utils.RespondError(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 
@@ -55,9 +55,9 @@ func RegisterationHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn
 	)
 
 	if execErr != nil {
-        log.Printf("Register handler - Error inserting user: %v", execErr)
-        http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-        return
+        log.Printf("RegistrationHandler - Error inserting user: %v", execErr)
+		utils.RespondError(w, http.StatusInternalServerError, "Internal Server Error")
+		return
     }
 
 	w.WriteHeader(http.StatusCreated)

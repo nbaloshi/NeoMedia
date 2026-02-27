@@ -29,9 +29,6 @@ sessions
 - Secure (in prod)
 
 ### Cleanup required
-- database reset
-- goroutine checks
-- routing readjustment
 - error handling
 - redundancy check
 - structure check
@@ -42,7 +39,7 @@ sessions
 - understanding objective shapes and transformation
 - understanding http
 
-# Step 1.4 – Frontend setup (NOW)
+# Step 1.4 – Frontend setup
 1. cd ../
 - npm create vite@latest frontend -- --template react-ts
 - cd frontend

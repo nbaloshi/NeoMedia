@@ -2,6 +2,7 @@ package auth
 
 import (
 	"NeoMedia/internal/sessions"
+	"NeoMedia/internal/utils"
 	"log"
 	"net/http"
 
@@ -9,16 +10,15 @@ import (
 )
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
-
 	token, ok := sessions.GetUserTokenFromContext(r)
 	if !ok {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		utils.RespondError(w, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
 	if err := sessions.EndSession(w, r, conn, token); err != nil {
-		log.Printf("Logout handler - Error deleting session: %v", err)
-		http.Error(w, "Failed to clear session", http.StatusInternalServerError)
+		log.Printf("LogoutHandler - Error ending session: %v", err)
+		utils.RespondError(w, http.StatusInternalServerError, "Failed to clear session")
 		return
 	}
 
