@@ -31,3 +31,8 @@ Empty states
 Skeleton loaders
 
 Toasts
+
+# Step 1.3 – CSRF Protection(from phase 2 and optional for now)
+1. Generate CSRF token
+2.  Send via cookie or header
+3.  Validate on POST/PUT/DELETE

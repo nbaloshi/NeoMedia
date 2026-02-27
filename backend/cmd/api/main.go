@@ -3,6 +3,7 @@ package main
 import (
 	"NeoMedia/db/sql"
 	"NeoMedia/internal/auth"
+	"NeoMedia/internal/sessions"
 	"context"
 	"fmt"
 	"log"
@@ -28,6 +29,8 @@ func main() {
 
 	// Setup HTTP server with /health route
 	r := chi.NewRouter()
+	r.Use(sessions.Middleware(db))
+	
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		// Simple health response
 		w.WriteHeader(http.StatusOK)

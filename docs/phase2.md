@@ -28,11 +28,6 @@ sessions
 - SameSite=Lax
 - Secure (in prod)
 
-# Step 1.3 – CSRF Protection
-1. Generate CSRF token
-2.  Send via cookie or header
-3.  Validate on POST/PUT/DELETE
-
 ### Cleanup required
 - database reset
 - goroutine checks
@@ -43,6 +38,9 @@ sessions
 - file and folder naming
 - consider connection pool
 - optimization
+- understand
+- understanding objective shapes and transformation
+- understanding http
 
 # Step 1.4 – Frontend setup (NOW)
 1. cd ../
