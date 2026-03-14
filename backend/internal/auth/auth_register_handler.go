@@ -61,5 +61,5 @@ func RegisterationHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn
     }
 
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("User registered successfully"))
+	w.Write([]byte(`{"message":"User registered successfully"}`))
 }

@@ -36,7 +36,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
 	querErr := sql.QueryRow(r.Context(), conn, userQuery,
 		body.Email,
 	).Scan(&userId, &hashedPassword)
-	if err == pgx.ErrNoRows {
+	if querErr == pgx.ErrNoRows {
 		utils.RespondError(w, http.StatusUnauthorized, "Invalid email or password")
 		return
 	} else if querErr != nil {

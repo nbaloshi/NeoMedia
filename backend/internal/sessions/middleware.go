@@ -52,7 +52,7 @@ func Middleware(conn *pgx.Conn) func(http.Handler) http.Handler {
 			}
 
 			// Step 4: Sliding expiration (optional)
-			updateQuery := `UPDATE sessions SET last_accessed = $1, expired_at = $2 WHERE session_token = $3`
+			updateQuery := `UPDATE sessions SET last_accessed = $1, expires_at = $2 WHERE session_token = $3`
 			updateQueryErr := sql.Exec(r.Context(), conn, updateQuery,
 				time.Now(),
 				time.Now().Add(30 * time.Minute),

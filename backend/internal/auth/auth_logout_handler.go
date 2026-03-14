@@ -23,5 +23,5 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Logout successful"))
+	w.Write([]byte(`{"message":"Logout successful"}`))
 }

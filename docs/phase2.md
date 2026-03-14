@@ -29,14 +29,7 @@ sessions
 - Secure (in prod)
 
 ### Cleanup required
-- error handling
-- redundancy check
-- structure check
-- file and folder naming
-- consider connection pool
-- optimization
 - understand
-- understanding objective shapes and transformation
 - understanding http
 
 # Step 1.4 – Frontend setup

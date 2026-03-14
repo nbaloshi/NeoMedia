@@ -37,7 +37,7 @@ func FetchSession(r *http.Request, conn *pgx.Conn, token string) (int, error) {
 	var userId int
 	var expiresAt time.Time
 
-	query := `SELECT user_id, expires_at FROM sessions WHERE sessions_token = $1`
+	query := `SELECT user_id, expires_at FROM sessions WHERE session_token = $1`
 	queryErr := sql.QueryRow(r.Context(), conn, query, token).Scan(&userId, &expiresAt)
 	if queryErr != nil {
 		return 0, fmt.Errorf("failed to fetch session: %w", queryErr)
