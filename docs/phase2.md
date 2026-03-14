@@ -28,10 +28,6 @@ sessions
 - SameSite=Lax
 - Secure (in prod)
 
-### Cleanup required
-- understand
-- understanding http
-
 # Step 1.4 – Frontend setup
 1. cd ../
 - npm create vite@latest frontend -- --template react-ts
