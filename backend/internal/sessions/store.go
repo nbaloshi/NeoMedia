@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func CreateSession(r *http.Request, conn *pgx.Conn, userId int) (string, error) {
+func CreateSession(r *http.Request, conn *pgx.Conn, userId string) (string, error) {
 	token, err := utils.GenerateSessionToken(16)
 	if err != nil {
 		return "", fmt.Errorf("failed to generate token: %w", err)
@@ -50,7 +50,7 @@ func FetchSession(r *http.Request, conn *pgx.Conn, token string) (int, error) {
 	return userId, nil
 }
 
-func DeleteSessionByUserId(r *http.Request, conn *pgx.Conn, userId int) error {
+func DeleteSessionByUserId(r *http.Request, conn *pgx.Conn, userId string) error {
 	query := `DELETE FROM sessions WHERE user_id = $1`
 	queryErr := sql.Exec(r.Context(), conn, query, userId)
 	if queryErr != nil {

@@ -5,6 +5,7 @@ import (
 	"NeoMedia/internal/sessions"
 	"NeoMedia/internal/utils"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -30,7 +31,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
 	// loop through database and match with the email and fetch email and hashed password
 	userQuery := `SELECT id, password_hash FROM users WHERE email = $1`
 	
-	var userId int
+	var userId string
 	var hashedPassword string
 
 	querErr := sql.QueryRow(r.Context(), conn, userQuery,
@@ -58,6 +59,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
 		utils.RespondError(w, http.StatusInternalServerError, "Failed to create session")
 		return
 	}
+	fmt.Println("LoginHandler - Login successful")
 
 	// respond
 	w.WriteHeader(http.StatusOK)

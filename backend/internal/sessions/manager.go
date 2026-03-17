@@ -1,17 +1,19 @@
 package sessions
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/jackc/pgx/v5"
 )
 
-func StartSession(w http.ResponseWriter, r *http.Request, conn *pgx.Conn, userId int) error {
+func StartSession(w http.ResponseWriter, r *http.Request, conn *pgx.Conn, userId string) error {
 	// Clean up old sessions
 	if err := DeleteSessionByUserId(r, conn, userId); err != nil {
 		return err
 	}
+	fmt.Println("StartSession - old session deleted")
 
 	// Create new session in DB
 	token, err := CreateSession(r, conn, userId)

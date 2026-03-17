@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 )
 
 func main() {
@@ -29,8 +30,17 @@ func main() {
 
 	// Setup HTTP server with /health route
 	r := chi.NewRouter()
+
+	// Global middleware
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins: 	[]string{"http://localhost:5173"},
+		AllowedMethods: 	[]string{"GET", "POST", "PUT", "DELETE"},
+		AllowedHeaders: 	[]string{"Accept", "Authorization", "Content-Type"},
+		AllowCredentials: 	true,
+	}))
 	r.Use(sessions.Middleware(db))
 
+	// Routes
 	routes.HealthRoute(r, db)
 	routes.AuthRoutes(r, db)
 
