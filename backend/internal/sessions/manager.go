@@ -27,7 +27,7 @@ func StartSession(w http.ResponseWriter, r *http.Request, conn *pgx.Conn, userId
 		Value:    token,
 		Expires:  time.Now().Add(30 * time.Minute),
 		HttpOnly: true,
-		SameSite: http.SameSiteLaxMode,
+		SameSite: http.SameSiteNoneMode,
 		Secure:   true, // only in production with HTTPS
 		Path:     "/",
 	}
@@ -47,7 +47,7 @@ func EndSession(w http.ResponseWriter, r *http.Request, conn *pgx.Conn, token st
 		Value:    "",
 		Expires:  time.Unix(0, 0),
 		HttpOnly: true,
-		SameSite: http.SameSiteLaxMode,
+		SameSite: http.SameSiteNoneMode,
 		Secure:   true,
 		Path:     "/",
 	}
@@ -57,15 +57,15 @@ func EndSession(w http.ResponseWriter, r *http.Request, conn *pgx.Conn, token st
 }
 
 // GetUserFromSession validates a session cookie and returns user ID
-func GetUserFromSession(r *http.Request, conn *pgx.Conn) (int, error) {
+func GetUserFromSession(r *http.Request, conn *pgx.Conn) (string, error) {
 	cookie, err := r.Cookie("session_token")
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
 	userId, err := FetchSession(r, conn, cookie.Value)
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
 	return userId, nil

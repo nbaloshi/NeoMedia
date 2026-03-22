@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/jackc/pgx/v5"
 )
@@ -16,7 +15,7 @@ type RegisterBody struct {
 	LastName    string   	`json:"lastname"`
 	Email       string   	`json:"email"`
 	Gender      string   	`json:"gender"`
-	DateOfBirth time.Time 	`json:"dateOfBirth"`
+	DateOfBirth string 	`json:"dateOfBirth"`
 	UserName    string   	`json:"username"`
 	Password    string   	`json:"password"`
 	ProfilePic  string   	`json:"profilePic"`

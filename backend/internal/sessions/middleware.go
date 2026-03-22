@@ -36,9 +36,9 @@ func Middleware(conn *pgx.Conn) func(http.Handler) http.Handler {
 			token := cookie.Value
 
 			// Step 2: Fetch session from DB
-			var userId int
+			var userId string
 			var expiresAt time.Time
-			fetchQuery := `SELECT user_id, expires_at FROM session WHERE session_token = $1 AND is_active = true`
+			fetchQuery := `SELECT user_id, expires_at FROM sessions WHERE session_token = $1 AND is_active = true`
 			fetchQueryErr := sql.QueryRow(r.Context(), conn, fetchQuery, token).Scan(&userId, &expiresAt)
 			if fetchQueryErr != nil {
 				http.Error(w, "Unauthorized: invalid session", http.StatusUnauthorized)
@@ -68,7 +68,7 @@ func Middleware(conn *pgx.Conn) func(http.Handler) http.Handler {
 				Value: token,
 				Expires: time.Now().Add(30 * time.Minute),
 				HttpOnly: true,
-				SameSite: http.SameSiteLaxMode,
+				SameSite: http.SameSiteNoneMode,
 				Secure: true,
 				Path: "/",
 			}
@@ -83,8 +83,8 @@ func Middleware(conn *pgx.Conn) func(http.Handler) http.Handler {
 	}
 }
 
-func GetUserIDFromContext(r *http.Request) (int, bool) {
-	userId, ok := r.Context().Value(userIdKey).(int)
+func GetUserIDFromContext(r *http.Request) (string, bool) {
+	userId, ok := r.Context().Value(userIdKey).(string)
 	return userId, ok
 }
 

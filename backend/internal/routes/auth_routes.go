@@ -23,4 +23,9 @@ func AuthRoutes(r *chi.Mux, db *pgx.Conn) {
 	r.Post("/logout", func(w http.ResponseWriter, r *http.Request) {
 		auth.LogoutHandler(w, r, db)
 	})
+	
+	// User route
+	r.Get("/me", func(w http.ResponseWriter, r *http.Request) {
+		auth.MeHandler(w, r, db)
+	})
 }

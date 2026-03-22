@@ -1,13 +1,25 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import LoginPage from "./pages/Login"
+import RegisterPage from "./pages/Register"
+import { SessionProvider } from "./context/SessionProvider"
+import { PrivateRoute } from "./components/PrivateRoute"
+
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/" element={<Navigate to="/login" replace />} />
-      </Routes>
-    </BrowserRouter>
+    <SessionProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/home" element={
+            <PrivateRoute>
+              <p>Home page</p>
+            </PrivateRoute>
+          } />
+        </Routes>
+      </BrowserRouter>
+    </SessionProvider>
   )
 }
 

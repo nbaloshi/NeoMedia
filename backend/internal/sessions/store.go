@@ -33,18 +33,18 @@ func CreateSession(r *http.Request, conn *pgx.Conn, userId string) (string, erro
 	return token, nil
 }
 
-func FetchSession(r *http.Request, conn *pgx.Conn, token string) (int, error) {
-	var userId int
+func FetchSession(r *http.Request, conn *pgx.Conn, token string) (string, error) {
+	var userId string
 	var expiresAt time.Time
 
 	query := `SELECT user_id, expires_at FROM sessions WHERE session_token = $1`
 	queryErr := sql.QueryRow(r.Context(), conn, query, token).Scan(&userId, &expiresAt)
 	if queryErr != nil {
-		return 0, fmt.Errorf("failed to fetch session: %w", queryErr)
+		return "", fmt.Errorf("failed to fetch session: %w", queryErr)
 	}
 
 	if utils.HasExpired(expiresAt) {
-		return 0, fmt.Errorf("Session expired")
+		return "", fmt.Errorf("Session expired")
 	}
 
 	return userId, nil
