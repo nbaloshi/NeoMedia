@@ -3,6 +3,7 @@ import LoginPage from "./pages/Login"
 import RegisterPage from "./pages/Register"
 import { SessionProvider } from "./context/SessionProvider"
 import { PrivateRoute } from "./components/PrivateRoute"
+import HomePage from "./pages/Home"
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/home" element={
             <PrivateRoute>
-              <p>Home page</p>
+              <HomePage />
             </PrivateRoute>
           } />
         </Routes>

@@ -20,8 +20,9 @@ func MeHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
 	}
 
 	var email string
-	query := `SELECT email FROM users WHERE id = $1`
-	err := sql.QueryRow(r.Context(), conn, query, userId).Scan(&email)
+	var username string
+	query := `SELECT email, username FROM users WHERE id = $1`
+	err := sql.QueryRow(r.Context(), conn, query, userId).Scan(&email, &username)
 	if err != nil {
 		utils.RespondError(w, http.StatusInternalServerError, "Failed to fetch user")
 		return
@@ -30,6 +31,7 @@ func MeHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
 	resp := map[string]interface{}{
 		"id":	 userId,
 		"email": email,
+		"username": username,
 	}
 
 	w.Header().Set("Content-Type", "application/json")

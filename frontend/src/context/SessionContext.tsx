@@ -3,6 +3,7 @@ import React, { createContext } from "react";
 export interface User {
     id: string;
     email: string;
+    username: string;
 }
 
 interface SessionContextType {
