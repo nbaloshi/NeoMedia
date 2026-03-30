@@ -32,37 +32,42 @@ export default function LoginForm() {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="max-w-sm mx-auto p-6 bg-white shadow rounded">
-            <h1 className="text-xl font-bold mb-4">Login</h1>
+        <form onSubmit={handleSubmit} className="w-9/12">
+            <h1 className="text-lg font-semibold mb-7">Log in to your account</h1>
             {isError && <p className="text-red-500 mb-2">{(error as Error).message}</p>}
             <input 
                 type="email"
                 placeholder="Email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="w-full mb-3 p-2 border rounded"
+                className="w-full mb-4 p-4 border border-gray-300 rounded-2xl
+                             focus:border-cyan-600 focus:ring-cyan-600 focus:ring-2"
             />
             <input 
                 type="password"
                 placeholder="Password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                className="w-full mb-3 p-2 border rounded"
+                className="w-full mb-6 p-4 border border-gray-300 rounded-2xl
+                            focus:border-cyan-600 focus:ring-cyan-600 focus:ring-2"
             />
+            
             <button 
                 type="submit"
                 disabled={isPending}
-                className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+                className="w-full mb-3 font-semibold bg-indigo-600 text-white py-2 rounded-full hover:bg-indigo-700"
             >
                 {isPending ? "Logging in..." : "Log in"}
             </button>
+            <p className="flex justify-center p-5 mb-8 font-semibold">Forgot password? Too bad.</p>
             <button 
                 type="button"
                 onClick={() => navigate("/register")}
-                className="w-full bg-gray-600 text-white py-2 rounded hover:bg-gray-700 mt-2"
+                className="w-full font-semibold bg-white text-cyan-600 border border-gray-300 py-2 rounded-full hover:bg-gray-300 mb-2"
             >
                 Create an account
             </button>
+            <p className="flex justify-center font-semibold text-indigo-600">NeoMedia</p>
         </form>
     )
 }
