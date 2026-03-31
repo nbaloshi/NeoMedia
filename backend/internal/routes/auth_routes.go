@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"NeoMedia/internal/auth"
+	"NeoMedia/internal/handlers/auth"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"

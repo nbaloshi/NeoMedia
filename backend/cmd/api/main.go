@@ -43,6 +43,7 @@ func main() {
 	// Routes
 	routes.HealthRoute(r, db)
 	routes.AuthRoutes(r, db)
+	routes.PostsRoutes(r, db)
 
 	// Goroutine server
 	server := &http.Server{

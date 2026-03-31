@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLogin } from "../api/useLogin";
+import { useLogin } from "../api/auth/useLogin";
 import { SessionContext } from "../context/SessionContext";
 
 export default function LoginForm() {

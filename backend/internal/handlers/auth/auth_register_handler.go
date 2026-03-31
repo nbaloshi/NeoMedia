@@ -15,7 +15,7 @@ type RegisterBody struct {
 	LastName    string   	`json:"lastname"`
 	Email       string   	`json:"email"`
 	Gender      string   	`json:"gender"`
-	DateOfBirth string 	`json:"dateOfBirth"`
+	DateOfBirth string 		`json:"dateOfBirth"`
 	UserName    string   	`json:"username"`
 	Password    string   	`json:"password"`
 	ProfilePic  string   	`json:"profilePic"`
