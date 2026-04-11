@@ -38,3 +38,7 @@ func Exec(ctx context.Context, conn *pgx.Conn, query string, args ...any) error 
 func QueryRow(ctx context.Context, conn *pgx.Conn, query string, args ...any) pgx.Row {
 	return conn.QueryRow(ctx, query, args...)
 }
+
+func Query(ctx context.Context, conn *pgx.Conn, query string, args ...any) (pgx.Rows, error) {
+    return conn.Query(ctx, query, args...)
+}

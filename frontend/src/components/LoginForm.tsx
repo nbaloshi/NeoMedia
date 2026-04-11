@@ -55,7 +55,7 @@ export default function LoginForm() {
             <button 
                 type="submit"
                 disabled={isPending}
-                className="w-full mb-3 font-semibold bg-indigo-600 text-white py-2 rounded-full hover:bg-indigo-700"
+                className="w-full mb-3 font-semibold bg-indigo-700 text-white py-2 rounded-full hover:bg-indigo-700"
             >
                 {isPending ? "Logging in..." : "Log in"}
             </button>
@@ -67,7 +67,7 @@ export default function LoginForm() {
             >
                 Create an account
             </button>
-            <p className="flex justify-center font-semibold text-indigo-600">NeoMedia</p>
+            <p className="flex justify-center font-semibold text-indigo-700">NeoMedia</p>
         </form>
     )
 }

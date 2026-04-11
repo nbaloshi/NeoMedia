@@ -14,6 +14,7 @@ import (
 type ContextKey string
 
 const userIdKey ContextKey = "userId"
+const usernameKey ContextKey = "username"
 const userTokenKey ContextKey = "token_session"
 
 func Middleware(conn *pgx.Conn) func(http.Handler) http.Handler {
@@ -86,6 +87,11 @@ func Middleware(conn *pgx.Conn) func(http.Handler) http.Handler {
 func GetUserIDFromContext(r *http.Request) (string, bool) {
 	userId, ok := r.Context().Value(userIdKey).(string)
 	return userId, ok
+}
+
+func GetUsernameFromContext(r *http.Request) (string, bool) {
+	username, ok := r.Context().Value(usernameKey).(string)
+	return username, ok
 }
 
 func GetUserTokenFromContext(r *http.Request) (string, bool) {

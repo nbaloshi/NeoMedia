@@ -2,6 +2,7 @@ package posts
 
 import (
 	"NeoMedia/db/sql"
+	"NeoMedia/internal/sessions"
 	"NeoMedia/internal/utils"
 	"encoding/json"
 	"log"
@@ -11,11 +12,16 @@ import (
 )
 
 type PostCreateBody struct {
-	UserId  string `json:"userId"`
 	Content string `json:"content"`
 }
 
 func PostsCreateHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
+	userId, ok := sessions.GetUserIDFromContext(r)
+		if !ok {
+    	utils.RespondError(w, http.StatusUnauthorized, "Unauthorized")
+    	return
+	}
+
 	var body PostCreateBody
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
@@ -24,9 +30,17 @@ func PostsCreateHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) 
 		return
 	}
 
-	query := `INSERT INTO posts (user_id, content) VALUES ($1, $2)`
+	var username string
+	queryUsername := `SELECT username FROM users WHERE id = $1`
+	queryErr := sql.QueryRow(r.Context(), conn, queryUsername, userId).Scan(&username)
+	if queryErr != nil {
+		log.Printf("CreatePostsHandler - Error querrying username: %v", queryErr)
+		utils.RespondError(w, http.StatusInternalServerError, "Internal Server Error")
+		return
+	}
 
-	execErr := sql.Exec(r.Context(), conn, query, body.UserId, body.Content)
+	query := `INSERT INTO posts (username, content) VALUES ($1, $2)`
+	execErr := sql.Exec(r.Context(), conn, query, username, body.Content)
 	if execErr != nil {
 		log.Printf("CreatePostsHandler - Error inserting posts: %v", execErr)
 		utils.RespondError(w, http.StatusInternalServerError, "Internal Server Error")

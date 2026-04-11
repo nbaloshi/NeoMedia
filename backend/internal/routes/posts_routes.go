@@ -12,4 +12,8 @@ func PostsRoutes(r *chi.Mux, db *pgx.Conn) {
 	r.Post("/posts", func(w http.ResponseWriter, r *http.Request) {
 		posts.PostsCreateHandler(w, r, db)
 	})
+
+	r.Get("/posts", func(w http.ResponseWriter, r *http.Request) {
+		posts.PostsHandler(w, r, db)
+	})
 }
