@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import useFetchPosts from "../api/posts/useFetchPosts";
-import formatDate from "../utils/formateDate";
+import PostCard from "./PostCard";
 
 export default function Feed() {
     const {
@@ -43,17 +43,8 @@ export default function Feed() {
             {data?.pages.map((page, i) => (
                 <div key={i}>
                     {page.map(post => (
-                        <div key={post.id} className="p-4 bg-indigo-100 shadow rounded m-4">
-                            <div className="flex justify-between items-start mb-2">
-                                <p className="font-semibold">{post.username}</p>
-                                <span className="text-xs text-gray-500">
-                                    {formatDate(post.createdAt)}
-                                </span>
-                            </div>
-                            <p className="break-words">
-                                {post.content}
-                            </p>
-                        </div>
+                        <PostCard key={post.id} post={post}
+                        />
                     ))}
                 </div>
             ))}
