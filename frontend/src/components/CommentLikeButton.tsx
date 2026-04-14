@@ -1,12 +1,12 @@
 import { useQueryClient } from "@tanstack/react-query"
-import useLikesPostsToggle from "../api/likes/useLikesPostsToggle"
-import useFetchLikes from "../api/likes/useFetchLikesPosts"
 import type React from "react"
+import useFetchLikesComments from "../api/likes/useFetchLikesComments"
+import useLikesCommentsToggle from "../api/likes/useLikesCommentsToggle"
 
-export default function LikeButton({ postId }: { postId: string }) {
+export default function CommentLikeButton({ commentId }: { commentId: string }) {
   const queryClient = useQueryClient()
-  const { data, isLoading } = useFetchLikes(postId)
-  const toggleLike = useLikesPostsToggle()
+  const { data, isLoading } = useFetchLikesComments(commentId)
+  const toggleLike = useLikesCommentsToggle()
 
   if (isLoading) return <span>Loading...</span>
 
@@ -15,10 +15,10 @@ export default function LikeButton({ postId }: { postId: string }) {
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation()
-    toggleLike.mutate(postId, {
+    toggleLike.mutate(commentId, {
       onSuccess: () => {
         // refetch likes after toggle to update count + state
-        queryClient.invalidateQueries({ queryKey: ["likes", postId] })
+        queryClient.invalidateQueries({ queryKey: ["likes", commentId] })
       },
     })
   }

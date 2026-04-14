@@ -2,7 +2,7 @@ import { useState } from "react";
 import formatDate from "../utils/formateDate";
 import { CommentInput } from "./CommentInput";
 import CommentsList from "./CommentsList";
-import LikeButton from "./LikeButton";
+import PostLikeButton from "./PostLikeButton";
 
 interface Post {
   id: string
@@ -28,7 +28,7 @@ export default function PostCard({ post }: { post: Post}) {
 
             {expanded && <CommentsList postId={post.id} />}
 
-            <LikeButton postId={post.id} />
+            <PostLikeButton postId={post.id} />
 
             
         </div>

@@ -5,9 +5,9 @@ interface LikesResponse {
   likedByMe: boolean
 }
 
-export default function useFetchLikesPosts(postId: string) {
+export default function useFetchLikesComments(commentId: string) {
   const queryFn = async (): Promise<LikesResponse> => {
-    const res = await fetch(`http://localhost:8080/likes-post?post_id=${postId}`,{
+    const res = await fetch(`http://localhost:8080/likes-comment?comment_id=${commentId}`,{
         credentials: "include"
     })
     if (!res.ok) {
@@ -18,7 +18,7 @@ export default function useFetchLikesPosts(postId: string) {
   }
 
   return useQuery<LikesResponse>({
-    queryKey: ["likes", postId],
+    queryKey: ["likes", commentId],
     queryFn,
   })
 }

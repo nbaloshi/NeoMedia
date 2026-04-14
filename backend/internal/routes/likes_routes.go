@@ -13,7 +13,15 @@ func LikesRoutes(r *chi.Mux, db *pgxpool.Pool) {
 		likes.LikesPostsToggleHandler(w, r, db)
 	})
 
+	r.Post("/likes-comment", func(w http.ResponseWriter, r *http.Request) {
+		likes.LikesCommentsToggleHandler(w, r, db)
+	})
+
 	r.Get("/likes-post", func(w http.ResponseWriter, r *http.Request) {
 		likes.LikesPostsHandler(w, r, db)
+	})
+
+	r.Get("/likes-comment", func(w http.ResponseWriter, r *http.Request) {
+		likes.LikesCommentsHandler(w, r, db)
 	})
 }

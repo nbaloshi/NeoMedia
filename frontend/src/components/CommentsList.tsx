@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react"
 import useFetchComments from "../api/comments/useFetchComments"
 import formatDate from "../utils/formateDate"
+import CommentLikeButton from "./CommentLikeButton"
 
 export default function CommentsList({ postId }: { postId: string }) {
     const {
@@ -49,6 +50,7 @@ export default function CommentsList({ postId }: { postId: string }) {
                                 <span className="text-xs text-gray-500">{formatDate(comment.createdAt)}</span>
                             </div>
                             <p className="break-words">{comment.content}</p>
+                            <CommentLikeButton commentId={comment.id} />
                         </div>
                     ))}
                 </div>
