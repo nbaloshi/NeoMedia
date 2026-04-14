@@ -8,14 +8,14 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type PostCreateBody struct {
 	Content string `json:"content"`
 }
 
-func PostsCreateHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
+func PostsCreateHandler(w http.ResponseWriter, r *http.Request, pool *pgxpool.Pool) {
 	userId, ok := sessions.GetUserIDFromContext(r)
 		if !ok {
     	utils.RespondError(w, http.StatusUnauthorized, "Unauthorized")
@@ -32,7 +32,7 @@ func PostsCreateHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) 
 
 	var username string
 	queryUsername := `SELECT username FROM users WHERE id = $1`
-	queryErr := sql.QueryRow(r.Context(), conn, queryUsername, userId).Scan(&username)
+	queryErr := sql.QueryRow(r.Context(), pool, queryUsername, userId).Scan(&username)
 	if queryErr != nil {
 		log.Printf("CreatePostsHandler - Error querrying username: %v", queryErr)
 		utils.RespondError(w, http.StatusInternalServerError, "Internal Server Error")
@@ -40,7 +40,7 @@ func PostsCreateHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) 
 	}
 
 	query := `INSERT INTO posts (username, content) VALUES ($1, $2)`
-	execErr := sql.Exec(r.Context(), conn, query, username, body.Content)
+	execErr := sql.Exec(r.Context(), pool, query, username, body.Content)
 	if execErr != nil {
 		log.Printf("CreatePostsHandler - Error inserting posts: %v", execErr)
 		utils.RespondError(w, http.StatusInternalServerError, "Internal Server Error")

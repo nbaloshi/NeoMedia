@@ -45,6 +45,7 @@ func main() {
 	routes.AuthRoutes(r, db)
 	routes.PostsRoutes(r, db)
 	routes.CommentsRoutes(r, db)
+	routes.LikesRoutes(r, db)
 
 	// Goroutine server
 	server := &http.Server{

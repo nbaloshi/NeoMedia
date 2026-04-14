@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func MeHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
+func MeHandler(w http.ResponseWriter, r *http.Request, pool *pgxpool.Pool) {
 	userId, ok := sessions.GetUserIDFromContext(r)
 	if !ok {
 		utils.RespondError(w, http.StatusUnauthorized, "Unauthorized")
@@ -22,7 +22,7 @@ func MeHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
 	var email string
 	var username string
 	query := `SELECT email, username FROM users WHERE id = $1`
-	err := sql.QueryRow(r.Context(), conn, query, userId).Scan(&email, &username)
+	err := sql.QueryRow(r.Context(), pool, query, userId).Scan(&email, &username)
 	if err != nil {
 		utils.RespondError(w, http.StatusInternalServerError, "Failed to fetch user")
 		return

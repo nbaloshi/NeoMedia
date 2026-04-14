@@ -5,10 +5,10 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func AuthRoutes(r *chi.Mux, db *pgx.Conn) {
+func AuthRoutes(r *chi.Mux, db *pgxpool.Pool) {
 	// Registration route
 	r.Post("/register", func(w http.ResponseWriter, r *http.Request) {
 		auth.RegisterationHandler(w, r, db)

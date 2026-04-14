@@ -8,7 +8,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type CommentCreateBody struct {
@@ -16,7 +16,7 @@ type CommentCreateBody struct {
 	Content string `json:"content"`
 }
 
-func CommentsCreateHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
+func CommentsCreateHandler(w http.ResponseWriter, r *http.Request, pool *pgxpool.Pool) {
 	userId, ok := sessions.GetUserIDFromContext(r)
 	if !ok {
 		utils.RespondError(w, http.StatusUnauthorized, "Unauthorized")
@@ -33,7 +33,7 @@ func CommentsCreateHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Con
 
 	var username string
 	queryUsername := `SELECT username FROM users WHERE id = $1`
-	queryErr := sql.QueryRow(r.Context(), conn, queryUsername, userId).Scan(&username)
+	queryErr := sql.QueryRow(r.Context(), pool, queryUsername, userId).Scan(&username)
 	if queryErr != nil {
 		log.Printf("CommentsCreateHandler - Error querrying username: %v", queryErr)
 		utils.RespondError(w, http.StatusInternalServerError, "Internal Server Error")
@@ -41,7 +41,7 @@ func CommentsCreateHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Con
 	}
 
 	query := `INSERT INTO comments (post_id, username, content) VALUES ($1, $2, $3)`
-	execErr := sql.Exec(r.Context(), conn, query, body.PostID, username, body.Content)
+	execErr := sql.Exec(r.Context(), pool, query, body.PostID, username, body.Content)
 	if execErr != nil {
 		log.Printf("CommentsCreateHandler - Error inserting comment: %v", execErr)
 		utils.RespondError(w, http.StatusInternalServerError, "Internal Server Error")

@@ -5,10 +5,10 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func PostsRoutes(r *chi.Mux, db *pgx.Conn) {
+func PostsRoutes(r *chi.Mux, db *pgxpool.Pool) {
 	r.Post("/posts", func(w http.ResponseWriter, r *http.Request) {
 		posts.PostsCreateHandler(w, r, db)
 	})

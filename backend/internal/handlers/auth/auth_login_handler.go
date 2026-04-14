@@ -10,6 +10,7 @@ import (
 	"net/http"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type LoginBody struct {
@@ -17,7 +18,7 @@ type LoginBody struct {
 	Password	string	`json:"password"`
 }
 
-func LoginHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
+func LoginHandler(w http.ResponseWriter, r *http.Request, pool *pgxpool.Pool) {
 	var body LoginBody
 
 	// decode from frontend and put it in the body
@@ -34,7 +35,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
 	var userId string
 	var hashedPassword string
 
-	querErr := sql.QueryRow(r.Context(), conn, userQuery,
+	querErr := sql.QueryRow(r.Context(), pool, userQuery,
 		body.Email,
 	).Scan(&userId, &hashedPassword)
 	if querErr == pgx.ErrNoRows {
@@ -54,7 +55,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
 	}
 
 	// create session
-	if err := sessions.StartSession(w, r, conn, userId); err != nil {
+	if err := sessions.StartSession(w, r, pool, userId); err != nil {
 		log.Printf("LoginHandler - Session creation failed: %v", err)
 		utils.RespondError(w, http.StatusInternalServerError, "Failed to create session")
 		return

@@ -5,18 +5,18 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func StartSession(w http.ResponseWriter, r *http.Request, conn *pgx.Conn, userId string) error {
+func StartSession(w http.ResponseWriter, r *http.Request, pool *pgxpool.Pool, userId string) error {
 	// Clean up old sessions
-	if err := DeleteSessionByUserId(r, conn, userId); err != nil {
+	if err := DeleteSessionByUserId(r, pool, userId); err != nil {
 		return err
 	}
 	fmt.Println("StartSession - old session deleted")
 
 	// Create new session in DB
-	token, err := CreateSession(r, conn, userId)
+	token, err := CreateSession(r, pool, userId)
 	if err != nil {
 		return err
 	}
@@ -36,8 +36,8 @@ func StartSession(w http.ResponseWriter, r *http.Request, conn *pgx.Conn, userId
 	return nil
 }
 
-func EndSession(w http.ResponseWriter, r *http.Request, conn *pgx.Conn, token string) error {
-	if err := DeleteSessionByToken(r, conn, token); err != nil {
+func EndSession(w http.ResponseWriter, r *http.Request, pool *pgxpool.Pool, token string) error {
+	if err := DeleteSessionByToken(r, pool, token); err != nil {
 		return err
 	}
 
@@ -57,13 +57,13 @@ func EndSession(w http.ResponseWriter, r *http.Request, conn *pgx.Conn, token st
 }
 
 // GetUserFromSession validates a session cookie and returns user ID
-func GetUserFromSession(r *http.Request, conn *pgx.Conn) (string, error) {
+func GetUserFromSession(r *http.Request, pool *pgxpool.Pool) (string, error) {
 	cookie, err := r.Cookie("session_token")
 	if err != nil {
 		return "", err
 	}
 
-	userId, err := FetchSession(r, conn, cookie.Value)
+	userId, err := FetchSession(r, pool, cookie.Value)
 	if err != nil {
 		return "", err
 	}

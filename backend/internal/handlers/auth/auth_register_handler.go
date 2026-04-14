@@ -7,7 +7,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type RegisterBody struct {
@@ -21,7 +21,7 @@ type RegisterBody struct {
 	ProfilePic  string   	`json:"profilePic"`
 }
 
-func RegisterationHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
+func RegisterationHandler(w http.ResponseWriter, r *http.Request, pool *pgxpool.Pool) {
 	var body RegisterBody
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
@@ -42,7 +42,7 @@ func RegisterationHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 		`
 
-	execErr := sql.Exec(r.Context(), conn, query,
+	execErr := sql.Exec(r.Context(), pool, query,
 		body.FirstName,
 		body.LastName,
 		body.Email,

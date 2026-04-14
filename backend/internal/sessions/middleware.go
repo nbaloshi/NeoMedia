@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type ContextKey string
@@ -17,7 +17,7 @@ const userIdKey ContextKey = "userId"
 const usernameKey ContextKey = "username"
 const userTokenKey ContextKey = "token_session"
 
-func Middleware(conn *pgx.Conn) func(http.Handler) http.Handler {
+func Middleware(pool *pgxpool.Pool) func(http.Handler) http.Handler {
 
 	return func(next http.Handler) http.Handler {
 
@@ -40,7 +40,7 @@ func Middleware(conn *pgx.Conn) func(http.Handler) http.Handler {
 			var userId string
 			var expiresAt time.Time
 			fetchQuery := `SELECT user_id, expires_at FROM sessions WHERE session_token = $1 AND is_active = true`
-			fetchQueryErr := sql.QueryRow(r.Context(), conn, fetchQuery, token).Scan(&userId, &expiresAt)
+			fetchQueryErr := sql.QueryRow(r.Context(), pool, fetchQuery, token).Scan(&userId, &expiresAt)
 			if fetchQueryErr != nil {
 				http.Error(w, "Unauthorized: invalid session", http.StatusUnauthorized)
 				return
@@ -54,7 +54,7 @@ func Middleware(conn *pgx.Conn) func(http.Handler) http.Handler {
 
 			// Step 4: Sliding expiration (optional)
 			updateQuery := `UPDATE sessions SET last_accessed = $1, expires_at = $2 WHERE session_token = $3`
-			updateQueryErr := sql.Exec(r.Context(), conn, updateQuery,
+			updateQueryErr := sql.Exec(r.Context(), pool, updateQuery,
 				time.Now(),
 				time.Now().Add(30 * time.Minute),
 				token,

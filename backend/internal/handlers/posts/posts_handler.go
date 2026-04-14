@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Post struct {
@@ -19,7 +19,7 @@ type Post struct {
 	CreatedAt 	time.Time `json:"createdAt"`
 }
 
-func PostsHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
+func PostsHandler(w http.ResponseWriter, r *http.Request, pool *pgxpool.Pool) {
 	pageStr := r.URL.Query().Get("page")
 	limitStr := r.URL.Query().Get("limit")
 
@@ -40,7 +40,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request, conn *pgx.Conn) {
 			  LIMIT $1 OFFSET $2
 	`
 
-	rows, querryErr := sql.Query(r.Context(), conn, query, limit, offset)
+	rows, querryErr := sql.Query(r.Context(), pool, query, limit, offset)
 	if querryErr != nil {
 		log.Printf("PostsHandler - Error querrying posts: %v", querryErr)
 		utils.RespondError(w, http.StatusInternalServerError, "Internal Server Error")

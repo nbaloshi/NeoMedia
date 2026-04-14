@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func CreateSession(r *http.Request, conn *pgx.Conn, userId string) (string, error) {
+func CreateSession(r *http.Request, pool *pgxpool.Pool, userId string) (string, error) {
 	token, err := utils.GenerateSessionToken(16)
 	if err != nil {
 		return "", fmt.Errorf("failed to generate token: %w", err)
@@ -21,7 +21,7 @@ func CreateSession(r *http.Request, conn *pgx.Conn, userId string) (string, erro
 		VALUES ($1, $2, $3)
 	`
 
-	execErr := sql.Exec(r.Context(), conn, query,
+	execErr := sql.Exec(r.Context(), pool, query,
 		userId,
 		token,
 		time.Now().Add(30 * time.Minute),
@@ -33,12 +33,12 @@ func CreateSession(r *http.Request, conn *pgx.Conn, userId string) (string, erro
 	return token, nil
 }
 
-func FetchSession(r *http.Request, conn *pgx.Conn, token string) (string, error) {
+func FetchSession(r *http.Request, pool *pgxpool.Pool, token string) (string, error) {
 	var userId string
 	var expiresAt time.Time
 
 	query := `SELECT user_id, expires_at FROM sessions WHERE session_token = $1`
-	queryErr := sql.QueryRow(r.Context(), conn, query, token).Scan(&userId, &expiresAt)
+	queryErr := sql.QueryRow(r.Context(), pool, query, token).Scan(&userId, &expiresAt)
 	if queryErr != nil {
 		return "", fmt.Errorf("failed to fetch session: %w", queryErr)
 	}
@@ -50,18 +50,18 @@ func FetchSession(r *http.Request, conn *pgx.Conn, token string) (string, error)
 	return userId, nil
 }
 
-func DeleteSessionByUserId(r *http.Request, conn *pgx.Conn, userId string) error {
+func DeleteSessionByUserId(r *http.Request, pool *pgxpool.Pool, userId string) error {
 	query := `DELETE FROM sessions WHERE user_id = $1`
-	queryErr := sql.Exec(r.Context(), conn, query, userId)
+	queryErr := sql.Exec(r.Context(), pool, query, userId)
 	if queryErr != nil {
 		return fmt.Errorf("failed to delete session(s): %w", queryErr)
 	}
 	return nil
 }
 
-func DeleteSessionByToken(r *http.Request, conn *pgx.Conn, token string) error {
+func DeleteSessionByToken(r *http.Request, pool *pgxpool.Pool, token string) error {
 	query := `DELETE FROM sessions WHERE session_token = $1`
-	queryErr := sql.Exec(r.Context(), conn, query, token)
+	queryErr := sql.Exec(r.Context(), pool, query, token)
 	if queryErr != nil {
 		return fmt.Errorf("failed to delete session(s): %w", queryErr)
 	}
