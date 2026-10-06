@@ -1,3 +1,5 @@
+// go.mod
+
 module NeoMedia
 
 go 1.25.6

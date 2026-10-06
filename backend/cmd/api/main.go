@@ -1,3 +1,5 @@
+// main.go
+
 package main
 
 import (
@@ -28,17 +30,17 @@ func main() {
 		log.Fatalf("Failed to connect to DB: %v", err)
 	}
 
-	// Setup HTTP server with /health route
+	// Setup HTTP server
 	r := chi.NewRouter()
 
-	// Global middleware
+	// Connecting backend and frontend with defined methods, headders and credentials
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins: 	[]string{"http://localhost:5173"},
 		AllowedMethods: 	[]string{"GET", "POST", "PUT", "DELETE"},
 		AllowedHeaders: 	[]string{"Accept", "Authorization", "Content-Type"},
 		AllowCredentials: 	true,
 	}))
-	r.Use(sessions.Middleware(db))
+	r.Use(sessions.Middleware(db)) //attaching session management to every request
 
 	// Routes
 	routes.HealthRoute(r, db)

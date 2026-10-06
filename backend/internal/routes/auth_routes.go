@@ -1,3 +1,5 @@
+// auth_routes.go(to give you an idea how routes are setup)
+
 package routes
 
 import (

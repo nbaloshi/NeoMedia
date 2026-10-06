@@ -1,3 +1,5 @@
+// SessionProvider.ts
+
 import { useEffect, useState, type ReactNode } from "react";
 import type { User } from "./SessionContext";
 import{ SessionContext } from "./SessionContext";
