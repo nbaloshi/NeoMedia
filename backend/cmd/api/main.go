@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"os/signal"
 	"syscall"
 	"time"
@@ -24,7 +25,11 @@ func main() {
 	defer stop()
 
 	// Connect to databse
-	connStr := "postgres://neouser:84560505@localhost:5432/neomedia?sslmode=disable"
+	// connStr := "postgres://neouser:84560505@localhost:5432/neomedia?sslmode=disable"
+	connStr := os.Getenv("DATABASE_URL")
+	if connStr == "" {
+		log.Fatal("DATABASE_URL environment variable is required")
+	}
 	db, err := sql.GetDB(ctx, connStr)
 	if err != nil {
 		log.Fatalf("Failed to connect to DB: %v", err)
@@ -35,10 +40,12 @@ func main() {
 
 	// Connecting backend and frontend with defined methods, headders and credentials
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins: 	[]string{"http://localhost:5173"},
-		AllowedMethods: 	[]string{"GET", "POST", "PUT", "DELETE"},
-		AllowedHeaders: 	[]string{"Accept", "Authorization", "Content-Type"},
-		AllowCredentials: 	true,
+		AllowedOrigins: []string{
+			getEnv("FRONTEND_ORIGIN", "http://localhost:5173"),
+		},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
+		AllowCredentials: true,
 	}))
 	r.Use(sessions.Middleware(db)) //attaching session management to every request
 
@@ -51,10 +58,10 @@ func main() {
 
 	// Goroutine server
 	server := &http.Server{
-		Addr:	":8080",
+		Addr:    ":8080",
 		Handler: r,
 	}
-	go func()  {
+	go func() {
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("Server error: %v", err)
 			stop()
@@ -75,4 +82,12 @@ func main() {
 
 	sql.CloseDB(shutdownCtx, db)
 	fmt.Println("Program exited cleanly")
+}
+
+func getEnv(key, fallback string) string {
+	value := os.Getenv(key)
+	if value == "" {
+		return fallback
+	}
+	return value
 }
