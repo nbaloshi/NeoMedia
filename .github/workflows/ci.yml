@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  packages: write
 
 jobs:
   backend:
@@ -30,6 +31,15 @@ jobs:
 
       - name: Build backend Docker image
         run: docker build -t neomedia-backend:ci ./backend
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Tag backend image
+        run: docker tag neomedia-backend:ci ghcr.io/${{ github.repository_owner }}/neomedia-backend:latest
+
+      - name: Push backend image
+        run: docker push ghcr.io/${{ github.repository_owner }}/neomedia-backend:latest
 
   frontend:
     name: Frontend CI
@@ -60,3 +70,12 @@ jobs:
 
       - name: Build frontend Docker image
         run: docker build -t neomedia-frontend:ci ./frontend
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Tag frontend image
+        run: docker tag neomedia-frontend:ci ghcr.io/${{ github.repository_owner }}/neomedia-frontend:latest
+
+      - name: Push frontend image
+        run: docker push ghcr.io/${{ github.repository_owner }}/neomedia-frontend:latest
