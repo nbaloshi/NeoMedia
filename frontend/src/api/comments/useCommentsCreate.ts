@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query"
+import API_BASE_URL from "../../apiConfig";
 
 interface CommentCreateBody {
     post_id: string
@@ -11,7 +12,7 @@ interface CommentCreateResponse {
 
 export default function useCommentCreate() {
     const mutationFn = async (body: CommentCreateBody): Promise<CommentCreateResponse> => {
-        const res = await fetch("http://localhost:8080/comments", {
+        const res = await fetch(`${API_BASE_URL}/comments`, {
             method: "POST",
             headers: {"content-type": "application/json"},
             body: JSON.stringify(body),
@@ -23,7 +24,7 @@ export default function useCommentCreate() {
             throw new Error(data.message || "Failed to create comment")
         }
         return res.json()
-        
+
     }
     return useMutation({ mutationFn })
 }

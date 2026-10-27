@@ -1,6 +1,5 @@
-// useLogin.ts(this is one example of multiple other)
-
 import { useMutation } from "@tanstack/react-query"
+import API_BASE_URL from "../../apiConfig";
 
 interface LoginBody {
     email: string
@@ -13,7 +12,7 @@ interface LoginResponse {
 
 export function useLogin() {
     const mutationFn =  async (body: LoginBody): Promise<LoginResponse> => {
-        const res = await fetch("http://localhost:8080/login", {
+        const res = await fetch(`${API_BASE_URL}/login`, {
             method: "POST",
             headers: { "content-type": "application/json" },
             body: JSON.stringify(body),

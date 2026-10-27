@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import type { User } from "./SessionContext";
 import{ SessionContext } from "./SessionContext";
+import API_BASE_URL from "../apiConfig";
 
 interface SessionProviderProps {
     children: ReactNode
@@ -13,7 +14,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch("http://localhost:8080/me", { credentials: "include" })
+        fetch(`${API_BASE_URL}/me`, { credentials: "include" })
             .then(res => res.ok ? res.json() : null)
             .then(data => {
                 setUser(data);
@@ -23,7 +24,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
     }, []);
 
     const logout = async () => {
-        await fetch("http://localhost:8080/logout", {
+        await fetch(`${API_BASE_URL}/logout`, {
             method: "POST",
             credentials: "include",
         });

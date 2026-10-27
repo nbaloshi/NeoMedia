@@ -1,4 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query"
+import API_BASE_URL from "../../apiConfig";
 
 interface Post {
     id: string
@@ -9,10 +10,10 @@ interface Post {
 
 export default function useFetchPosts() {
     const queryFn = async ({ pageParam = 0 }): Promise<Post[]> => {
-        const res = await fetch(`http://localhost:8080/posts?page=${pageParam}&limit=10`, {
+        const res = await fetch(`${API_BASE_URL}/posts?page=${pageParam}&limit=10`, {
             credentials: "include",
         })
-        
+
         if (!res.ok) throw new Error("Failed to fetch posts")
         return res.json()
     }

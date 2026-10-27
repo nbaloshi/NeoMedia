@@ -1,4 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query"
+import API_BASE_URL from "../../apiConfig";
 
 interface Comment {
     id: string
@@ -9,10 +10,10 @@ interface Comment {
 
 export default function useFetchComments(postId: string) {
     const queryFn = async ({ pageParam = 0 }): Promise<Comment[]> => {
-        const res = await fetch(`http://localhost:8080/comments?post_id=${postId}&page=${pageParam}&limit=10`, {
+        const res = await fetch(`${API_BASE_URL}/comments?post_id=${postId}&page=${pageParam}&limit=10`, {
             credentials: "include",
         })
-        
+
         if (!res.ok) throw new Error("Failed to fetch comments")
         return res.json()
     }

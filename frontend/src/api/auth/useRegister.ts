@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query"
+import API_BASE_URL from "../../apiConfig";
 
 interface RegisterBody {
     firstname: string
@@ -17,7 +18,7 @@ interface RegisterResponse {
 
 export function useRegister() {
     const mutationFn = async (body: RegisterBody): Promise<RegisterResponse> => {
-        const res = await fetch("http://localhost:8080/register", {
+        const res = await fetch(`${API_BASE_URL}/register`, {
             method: "POST",
             headers: { "content-type": "application/json" },
             body: JSON.stringify(body),

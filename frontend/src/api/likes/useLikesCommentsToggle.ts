@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import API_BASE_URL from "../../apiConfig";
 
 interface Response {
     liked: boolean
@@ -7,7 +8,7 @@ interface Response {
 export default function useLikesCommentsToggle() {
     const queryClient = useQueryClient()
     const mutationFn = async (commentId: string): Promise<Response> => {
-        const res = await fetch(`http://localhost:8080/likes-comment?comment_id=${commentId}`, {
+        const res = await fetch(`${API_BASE_URL}/likes-comment?comment_id=${commentId}`, {
             method: "POST",
             credentials: "include",
         })
@@ -17,7 +18,7 @@ export default function useLikesCommentsToggle() {
         }
         return res.json()
     }
-    return useMutation({ 
+    return useMutation({
         mutationFn ,
         onSuccess: (_, commentId) => {
             queryClient.invalidateQueries({ queryKey: ["likes", commentId ]})

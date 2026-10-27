@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
+import API_BASE_URL from "../../apiConfig";
 
 interface LikesResponse {
   count: number
@@ -7,7 +8,7 @@ interface LikesResponse {
 
 export default function useFetchLikesPosts(postId: string) {
   const queryFn = async (): Promise<LikesResponse> => {
-    const res = await fetch(`http://localhost:8080/likes-post?post_id=${postId}`,{
+    const res = await fetch(`${API_BASE_URL}/likes-post?post_id=${postId}`,{
         credentials: "include"
     })
     if (!res.ok) {

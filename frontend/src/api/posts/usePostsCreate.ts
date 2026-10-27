@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query"
+import API_BASE_URL from "../../apiConfig";
 
 interface PostsCreateBody {
     content: string
@@ -10,7 +11,7 @@ interface PostsCreateResponse {
 
 export default function usePostsCreate() {
     const mutationFn = async (body: PostsCreateBody): Promise<PostsCreateResponse> => {
-        const res = await fetch("http://localhost:8080/posts", {
+        const res = await fetch(`${API_BASE_URL}/posts`, {
             method: "POST",
             headers: {"content-type": "application/json"},
             body: JSON.stringify(body),
